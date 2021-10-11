@@ -105,11 +105,24 @@ def testOLERegression(w, Xtest, ytest):
 
 
 def regressionObjVal(w, X, y, lambd):
-    # compute squared error (scalar) and gradient of squared error with respect
-    # to w (vector) for the given data X and y and the regularization parameter
-    # lambda                                                                  
+    Xw = np.dot(X, w)
+    Xw = np.array(Xw).reshape(242, 1)
+    y_Xw = y - Xw
+    y_Xw_t = np.transpose(y_Xw)
+    e1 = np.dot(y_Xw_t, y_Xw)
+    wt_w = np.dot(np.transpose(w), w)
+    error = 0.5 * (e1[0][0]) + (0.5 * lambd) * wt_w
 
-    # IMPLEMENT THIS METHOD                                             
+    Xt = np.transpose(X)
+    Xt_X = np.dot(Xt, X)
+    Xt_X_w = np.dot(Xt_X, w)
+    Xt_X_w = np.array(Xt_X_w).reshape(65, 1)
+    yt = np.transpose(y)
+    yt_X_t = np.transpose(np.dot(yt, X))
+    lambdw = np.array(lambd * w).reshape(65, 1)
+    error_grad = (Xt_X_w - yt_X_t + lambdw)
+    error_grad = error_grad.flatten()
+
     return error, error_grad
 
 
