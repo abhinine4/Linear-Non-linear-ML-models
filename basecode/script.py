@@ -81,13 +81,30 @@ def qdaTest(means, covmats, Xtest, ytest):
 
 
 def learnOLERegression(X, y):
-    # Inputs:                                                         
-    # X = N x d 
-    # y = N x 1                                                               
-    # Output: 
-    # w = d x 1 
+    X_mean = np.mean(X)
+    y_mean = np.mean(y)
 
-    # IMPLEMENT THIS METHOD                                                   
+    n = 0
+    d = 0
+    for i in range(len(X)):
+        n += (X[i] - X_mean) * (y[i] - y_mean)
+        d += (X[i] - X_mean) ** 2
+
+    w = n / d
+    epochs = 5000
+    lr = 0.0001
+    for i in range(epochs):
+        ypred = X.dot(w.T)
+
+        error = y - ypred
+        mse = np.mean(np.power(error, 2))
+
+        wgrad = -(1.0 / len(X)) * error.dot(X)
+
+        w = w - (lr * wgrad)
+
+        if i % 500 == 0:
+            print("Epoch %d: %f " % (i, mse))
     return w
 
 
@@ -104,14 +121,9 @@ def learnRidgeRegression(X, y, lambd):
 
 
 def testOLERegression(w, Xtest, ytest):
-    # Inputs:
-    # w = d x 1
-    # Xtest = N x d
-    # ytest = X x 1
-    # Output:
-    # mse
-
-    # IMPLEMENT THIS METHOD
+    ypred = Xtest.dot(w.T)
+    error = ytest - ypred
+    mse = np.mean(np.power(error, 2))
     return mse
 
 
