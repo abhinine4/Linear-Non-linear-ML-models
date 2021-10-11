@@ -103,8 +103,8 @@ def learnOLERegression(X, y):
 
         w = w - (lr * wgrad)
 
-        if i % 500 == 0:
-            print("Epoch %d: %f " % (i, mse))
+        # if i % 500 == 0:
+        #     print("Epoch %d: %f " % (i, mse))
     return w
 
 
