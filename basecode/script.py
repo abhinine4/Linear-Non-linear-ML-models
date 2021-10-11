@@ -81,47 +81,24 @@ def qdaTest(means, covmats, Xtest, ytest):
 
 
 def learnOLERegression(X, y):
-    X_mean = np.mean(X)
-    y_mean = np.mean(y)
-
-    n = 0
-    d = 0
-    for i in range(len(X)):
-        n += (X[i] - X_mean) * (y[i] - y_mean)
-        d += (X[i] - X_mean) ** 2
-
-    w = n / d
-    epochs = 5000
-    lr = 0.0001
-    for i in range(epochs):
-        ypred = X.dot(w.T)
-
-        error = y - ypred
-        mse = np.mean(np.power(error, 2))
-
-        wgrad = -(1.0 / len(X)) * error.dot(X)
-
-        w = w - (lr * wgrad)
-
-        # if i % 500 == 0:
-        #     print("Epoch %d: %f " % (i, mse))
+    XT = X.T
+    XTX = np.matmul(XT, X)
+    w = np.matmul(np.matmul(np.linalg.inv(XTX), XT), y)
+    ypred = X.dot(w)
+    error = y - ypred
+    mse = np.mean(np.power(error, 2))
     return w
 
 
 def learnRidgeRegression(X, y, lambd):
-    # Inputs:
-    # X = N x d                                                               
-    # y = N x 1 
-    # lambd = ridge parameter (scalar)
-    # Output:                                                                  
-    # w = d x 1                                                                
-
-    # IMPLEMENT THIS METHOD                                                   
+    XT = X.T
+    XTX = np.matmul(XT, X) + lambd * np.identity(X.shape[1])
+    w = np.matmul(np.matmul(np.linalg.inv(XTX), XT), y)
     return w
 
 
 def testOLERegression(w, Xtest, ytest):
-    ypred = Xtest.dot(w.T)
+    ypred = Xtest.dot(w)
     error = ytest - ypred
     mse = np.mean(np.power(error, 2))
     return mse
