@@ -127,13 +127,10 @@ def regressionObjVal(w, X, y, lambd):
 
 
 def mapNonLinear(x, p):
-    # Inputs:                                                                  
-    # x - a single column vector (N x 1)                                       
-    # p - integer (>= 0)                                                       
-    # Outputs:                                                                 
-    # Xp - (N x (p+1)) 
-
-    # IMPLEMENT THIS METHOD
+    x1 = np.array([x]).T
+    Xp = np.ones_like(x1)
+    for i in range(1, p + 1):
+        Xp = np.hstack((Xp, x1 ** i))
     return Xp
 
 
@@ -250,7 +247,7 @@ plt.show()
 
 # Problem 5
 pmax = 7
-lambda_opt = 0  # REPLACE THIS WITH lambda_opt estimated from Problem 3
+lambda_opt = 0.06  # REPLACE THIS WITH lambda_opt estimated from Problem 3
 mses5_train = np.zeros((pmax, 2))
 mses5 = np.zeros((pmax, 2))
 for p in range(pmax):
