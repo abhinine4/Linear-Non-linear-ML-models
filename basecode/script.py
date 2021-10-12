@@ -37,46 +37,45 @@ def qdaLearn(X, y):
 
 
 def ldaTest(means, covmat, Xtest, ytest):
-    means = means.T
-    result = np.zeros((Xtest.shape[0], means.shape[0]))
-    d = 1 / np.sqrt((2 * pi) ** means.shape[1] * det(covmat))
+  means = means.T
+  out = np.zeros((Xtest.shape[0], means.shape[0]))
+  covmat_det = np.linalg.det(covmat)
+  convmat_inv = np.linalg.inv(covmat)
+  den = np.sqrt((2 * pi) ** means.shape[1] * covmat_det)
 
-    for j in range(means.shape[0]):
-        result[:, j] = d * np.exp(-0.5 * np.array(
-            [np.dot(
-                np.dot(
-                    (Xtest[i, :] - means[j, :]),
-                    inv(covmat)),
-                (Xtest[i, :] - means[j, :]).T)
-                for i in range(Xtest.shape[0])]))
+  for j in range(means.shape[0]):
+      out[:, j] = (np.exp(-0.5 * np.array(
+          [np.dot(np.dot((Xtest[i, :] - means[j, :]),convmat_inv),
+              (Xtest[i, :] - means[j, :]).T)
+          for i in range(Xtest.shape[0])])))/den
 
-    ypred = np.argmax(result, axis=1) + 1
-    result = (ypred == ytest.ravel())
-    accuracy = len(np.where(result)[0])
-    acc = float(accuracy) / len(ytest)
-    return acc, ypred
+  ypred = np.argmax(out, axis=1) + 1
+  out = (ypred == ytest.reshape(len(ytest)))
+  accuracy = len(np.where(out)[0])
+  acc = float(accuracy) / (len(ytest))
+
+  return acc, ypred
 
 
 def qdaTest(means, covmats, Xtest, ytest):
     means = means.T
-    result = np.zeros((Xtest.shape[0], means.shape[0]))
+    out = np.zeros((Xtest.shape[0], means.shape[0]))
 
     for j in range(means.shape[0]):
-        d = 1 / np.sqrt((2 * pi) ** means.shape[1] * det(covmats[j]))
-        result[:, j] = d * np.exp(-0.5 * np.array(
-            [np.dot(
-                np.dot(
-                    (Xtest[i, :] - means[j, :]),
-                    inv(covmats[j])),
-                (Xtest[i, :] - means[j, :]).T)
-                for i in range(Xtest.shape[0])]
-        ))
+        covmat_det = np.linalg.det(covmats[j])
+        convmat_inv = np.linalg.inv(covmats[j])
+        den = np.sqrt((2 * pi) ** means.shape[1] * covmat_det)
+        out[:, j] = (np.exp(-0.5 * np.array(
+            [np.dot(np.dot((Xtest[i, :] - means[j, :]),convmat_inv),
+                    (Xtest[i, :] - means[j, :]).T)
+            for i in range(Xtest.shape[0])])))/den
 
-    ypred = np.argmax(result, axis=1) + 1
-    result = (ypred == ytest.ravel())
+    ypred = np.argmax(out, axis=1) + 1
+    out = (ypred == ytest.reshape(len(ytest)))
 
-    accuracy = len(np.where(result)[0])
+    accuracy = len(np.where(out)[0])
     acc = float(accuracy) / len(ytest)
+
     return acc, ypred
 
 
