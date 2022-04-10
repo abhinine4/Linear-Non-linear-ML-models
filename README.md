@@ -1,2 +1,2 @@
 # Linear-Non-linear-ML-models
-implemented QDA and LDA 
+Linear and non linear regression implementation 
